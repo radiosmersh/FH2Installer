@@ -12,13 +12,10 @@ Unofficial installer for [Forgotten Hope 2](http://fhmod.org), an award-winning 
 
 ## Instructions
 1.  Run the **fh2_setup.exe** installer and wait for the installation process to finish.
-2.  KeyManager window will pop up at the end, press **Random** (or type in your own serial key) and **Apply** your new serial key.
-3.  PB Service installation window will pop up, follow the installation process and wait until it's finished.
-4.  Create a new Account inside the game.
+2.  Create a new Account inside the game.
 
 ## Built With
 * [Inno Setup](http://www.jrsoftware.org/isinfo.php) - open-source script-driven installation system 
 
 ## Credits
 * **FH2 dev team** - for this beaitful mod
-* **Artyom Shcherbakov aka Tema567** - for his [BF2 Key Manager](https://github.com/art567/bf2keyman), withouth which this project wouldn't be possible
