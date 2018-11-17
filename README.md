@@ -9,7 +9,7 @@ Unofficial installer for [Forgotten Hope 2](http://fhmod.org), an award-winning 
 * Installation of DirectX, .NET Framework 3.5 and FH2 Community Updater
 
 ## Downloads
-| [Torrent](https://www.dropbox.com/s/ji38au451sou2r1/FH2%20Unofficial%20Standalone.torrent?dl)  | [Google Drive](https://drive.google.com/file/d/1xrRYe-7hoUKs3W6oJP0qU4w7Jh9XBCTM/view?usp=sharing) | 
+| [Torrent](https://www.dropbox.com/s/ji38au451sou2r1/FH2%20Unofficial%20Standalone.torrent?dl)  | [Google Drive](https://drive.google.com/open?id=1I2MdcTfmkeOqmJ6pwNX_T2huk266V1Ry) | 
 [OneDrive](https://1drv.ms/u/s!ArKl6aZTApvlnRorj6tcniELjcI0) | [Yandex Disk](https://yadi.sk/d/MNuEQ6yt3a9w9V) |
 
 
