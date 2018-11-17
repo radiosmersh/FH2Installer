@@ -19,7 +19,7 @@ Unofficial installer for [Forgotten Hope 2](http://fhmod.org), an award-winning 
 3. PB Service installation window will pop up, follow the installation process and wait until it's finished.
 4. Before you can jump into the game, you need to create an account. In order to do that, click on the desktop shorcut, which will open the launcher. Open the game, once it's loads, click on the “BFHQ”, then on “Manage Account". Fill all the required fields (email address isn't important, just make it up). Important notice: make sure you to write down password, as this is the only way you can restore your account!
 5. Next, open the launcher again and open configuration window through "OPTIONS" submenu.  Open "Gameplay" tab and select newly created account in "Login as" entry.
-6. You can join servers either from the in-game browser, or by clicking on the joystick on this page].
+6. You can join servers either from the in-game browser, or by clicking on the joystick on [this page](http://forgottenhope.warumdarum.de/fh2_gameserver.php).
 
 ## Built With
 * [Inno Setup](http://www.jrsoftware.org/isinfo.php) - open-source script-driven installation system 
