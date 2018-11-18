@@ -2,36 +2,27 @@
 Unofficial installer for [Forgotten Hope 2](http://fhmod.org), an award-winning World War II modification for Battlefield 2.
 
 ## Features
-<<<<<<< HEAD
 * Supports all Windows version starting from XP SP3
 * Includes bare minimum of files from BF2, required to run FH2
-=======
->>>>>>> 46e4803dbef266598c35504b4a9c65b6abac0b74
 * Multi-language support (all languages availible in the retail game + Russian)
 * Automatic key generation from the hardware, which provides for absolute uniqueness of the generated key
 * Installation of DirectX, .NET Framework 3.5 and FH2 Community Updater
 
 ## Downloads
-<<<<<<< HEAD
-| [Torrent](https://www.dropbox.com/s/ji38au451sou2r1/FH2%20Unofficial%20Standalone.torrent?dl)  | [Google Drive](https://drive.google.com/file/d/1xrRYe-7hoUKs3W6oJP0qU4w7Jh9XBCTM/view?usp=sharing) | 
+| [Torrent](https://www.dropbox.com/s/ji38au451sou2r1/FH2%20Unofficial%20Standalone.torrent?dl)  | [Google Drive](https://drive.google.com/open?id=1I2MdcTfmkeOqmJ6pwNX_T2huk266V1Ry) | 
 [OneDrive](https://1drv.ms/u/s!ArKl6aZTApvlnRorj6tcniELjcI0) | [Yandex Disk](https://yadi.sk/d/MNuEQ6yt3a9w9V) |
 
 
 ## Instructions
-1.  Mount the downloaded ISO image file with [WinCDEmu](http://wincdemu.sysprogs.org) or similar software (bult-in in Windows 10), or just extract it anywhere with 7-zip, or any other archiver.
-2.  Run the **fh2_setup.exe** installer and wait for the installation process to finish.
-3.  Create a new Account inside the game.
-=======
-| [Torrent](test)  | [Google Drive](https://onedrive.live.com/download?cid=E59B0253A6E9A5B2&resid=E59B0253A6E9A5B2!3738&authkey=AHdrZDDryGGTdFo) | [OneDrive](https://1drv.ms/u/s!ArKl6aZTApvlnRorj6tcniELjcI0) | [Yandex Disk](https://yadi.sk/d/qoQGQa3W3SJEsh) |
-
-
-## Instructions
-1.  Run the **fh2_setup.exe** installer and wait for the installation process to finish.
-2.  Create a new Account inside the game.
->>>>>>> 46e4803dbef266598c35504b4a9c65b6abac0b74
+1. Mount the downloaded ISO image file with [WinCDEmu](http://wincdemu.sysprogs.org) or similar software (bult-in in Windows 10), or just extract it anywhere with 7-zip, or any other archiver
+2. Run the **fh2_setup.exe** installer and wait for the file extraction to finish.
+3. PB Service installation window will pop up, follow the installation process and wait until it's finished.
+4. Before you can jump into the game, you need to create an account. In order to do that, click on the desktop shorcut, which will open the launcher. Open the game, once it's loads, click on the “BFHQ”, then on “Manage Account". Fill all the required fields (email address isn't important, just make it up). Important notice: make sure you to write down password, as this is the only way you can restore your account!
+5. Next, open the launcher again and open configuration window through "OPTIONS" submenu.  Open "Gameplay" tab and select newly created account in "Login as" entry.
+6. You can join servers either from the in-game browser, or by clicking on the joystick on [this page](http://forgottenhope.warumdarum.de/fh2_gameserver.php).
 
 ## Built With
 * [Inno Setup](http://www.jrsoftware.org/isinfo.php) - open-source script-driven installation system 
 
 ## Credits
-* **FH2 dev team** - for this beaitful mod
+* **FH2 dev team** - for this beautiful mod
