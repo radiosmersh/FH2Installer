@@ -112,10 +112,42 @@ end;
 function isRussian(): boolean;    
 begin
 	if ExpandConstant('{language}') = 'Russian' then
-		result := true
+		Result := true
 	else
-		result := false;
+		Result := false;
 end;
+
+function SetLanguage(Param: String): string;
+begin
+  if isRussian then
+    Result := 'English'
+  else
+    Result := ExpandConstant('{language}');
+end;
+
+function SetLocale(Param: String): string;
+var
+  language: String;
+begin
+  language := ExpandConstant('{language}');
+  case language of
+    'Chinese': Result := 'zh_Hans';
+    'Dutch': Result :=  'nl';
+    'English': Result := 'en_US';
+    'French': Result := 'fr_FR';
+    'German': Result := 'de_DE';
+    'Italian': Result := 'it_IT';
+    'Japanese': Result := 'ja_JP';
+    'Korean': Result := 'ko_KR';
+    'Polish': Result := 'pl_PL';
+    'Russian': Result := 'en_US';
+    'Spanish': Result := 'es_ES';
+    'Swedish': Result := 'sv_SE';
+    'Thai': Result := 'th_TH';
+    else Result := 'en_US';
+  end
+end;
+    
 
 function IntToHex(Value: Integer; Digits: Integer): string;
 var
@@ -189,30 +221,15 @@ Key, TmpFileName: String;
 ExecStdout: TArrayOfString;
 ResultCode: Integer;
 begin
-  Key := ''
+  Key := GetGuid
   TmpFileName := ExpandConstant('{tmp}') + '\drive_serial.txt';
   ExtractTemporaryFile('smartctl.exe');
   Exec(ExpandConstant('{cmd}'), '/C ' + ExpandConstant('{tmp}') + '/smartctl.exe -i /dev/sda > "' + TmpFileName + '"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
   if LoadStringsFromFile(TmpFileName, ExecStdout) then
-    TryGetValue(ExecStdout, 'Serial Number', Key);
-    
-  if (Key = '') then
-    Key := GetGuid; 
-    
-  Result := Key;
-end;
-
-function EncryptKey(const Key: String): String;
-var
-TmpFileName: String;
-ExecStdout: TArrayOfString;
-ResultCode: Integer;
-begin
-  TmpFileName := ExpandConstant('{tmp}') + '\encrypted_key.txt';
-  ExtractTemporaryFile('bf2crypt.exe');
-  Exec(ExpandConstant('{cmd}'), '/C ' + ExpandConstant('{tmp}') + '/bf2crypt.exe -e ' + Key + ' > "' + TmpFileName + '"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
-  if LoadStringsFromFile(TmpFileName, ExecStdout) then
-    Result := ExecStdout[0]
-  else
-    Result := GetSHA1OfString(Key);
+    try
+      TryGetValue(ExecStdout, 'Serial Number', Key);
+    except
+      Key := GetGuid;
+    end;
+  Result := Key + Key;
 end;

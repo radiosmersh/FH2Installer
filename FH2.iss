@@ -6,8 +6,8 @@ AppPublisher=FH2 Devs
 AppID={{2FE10CB1-887F-4AE0-AF87-34D5F4A5F6CF}
 AppPublisherURL=http://fhmod.org
 AppSupportURL=http://fhpubforum.warumdarum.de
-AppVersion=2.53
-VersionInfoVersion=2.53
+AppVersion=2.54
+VersionInfoVersion=2.54
 VersionInfoCopyright=FH2 Devs
 VersionInfoCompany=FH2 Devs
 VersionInfoDescription=Forgotten Hope 2.54
@@ -30,28 +30,28 @@ AppendDefaultDirName=true
 UninstallDisplayIcon={app}\mods\fh2\fh2.ico
 Compression=none
 AllowRootDirectory=true
+CompressionThreads=auto
+
+[Types]
+Name: "custom"; Description: "Custom installation"; Flags: iscustom
 
 [Components]
-Name: "main"; Description: "{cm:CompDescrFH2}"; Types: full compact custom; Flags: fixed
-Name: "cmp_updater"; Description: "{cm:CompDescrCommunityUpdater}"; Types: full;
-Name: "directx"; Description: "{cm:CompDescrDirectX}"; Types: full;
-Name: "dotnet"; Description: "{cm:CompDescrDotNet}"; Types: full;
-Name: "fh2_rus"; Description: "Установить дополнительную русификацию"; Types: full;
+Name: "main"; Description: "{cm:CompDescrFH2}"; Types: custom; Flags: fixed
+Name: "directx"; Description: "{cm:CompDescrDirectX}"; Types: custom;
+Name: "fh2_rus"; Description: "{cm:CompDescrRus}"; Types: custom;
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
 [Files]
 Source: "Files\main\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Components: main;
-Source: "Files\CommunityUpdater\*"; DestDir: "{app}\mods\fh2\CommunityUpdater"; Flags: ignoreversion recursesubdirs; Components: cmp_updater;
-Source: "Files\fh2_rus\*"; DestDir: "{app}\mods\fh2"; Flags: ignoreversion recursesubdirs; Components: fh2_rus;
 Source: "Include\smartctl.exe"; Flags: dontcopy
-Source: "Include\bf2crypt.exe"; Flags: dontcopy
+Source: "Include\BF2CDKeyCheck.exe"; DestDir: "{tmp}"
 
 [Registry]
 Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2"; ValueName: "InstallDir"; ValueType: String; ValueData: "{app}"; Flags: deletevalue uninsdeletekey;
-Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2"; ValueName: "Locale"; ValueType: String; ValueData: "en_US"; Flags: deletevalue uninsdeletekey;
-Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2"; ValueName: "Language"; ValueType: String; ValueData: "{language}"; Flags: deletevalue uninsdeletekey;
+Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2"; ValueName: "Locale"; ValueType: String; ValueData: "{code:SetLocale}"; Flags: deletevalue uninsdeletekey;
+Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2"; ValueName: "Language"; ValueType: String; ValueData: "{code:SetLanguage}"; Flags: deletevalue uninsdeletekey;
 Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2"; ValueName: "Version"; ValueType: String; ValueData: "1.5"; Flags: deletevalue uninsdeletekey; 
 Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2\ergc"; ValueName: ; ValueType: string; ValueData: "{code:SendKey}"; Flags: deletevalue uninsdeletekey; 
 Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2\wdc"; ValueName: ; ValueType: string; ValueData: "true"; Flags: deletevalue uninsdeletekey;
@@ -65,10 +65,8 @@ Root: HKCR; Subkey: "fh2\shell\open\command"; ValueName:; ValueType: string; Val
 
 [Icons]
 Name: "{group}\Forgotten Hope 2"; Filename: "{app}\mods\fh2\bin\FH2Launcher.exe"; Comment: "{cm:LaunchProgram,Forgotten Hope 2}";
-Name: "{group}\FH2 Community Updater"; Filename: "{app}\mods\fh2\CommunityUpdater\FH2CommunityUpdater.exe"; Comment: "{cm:LaunchProgram,FH2 Community Updater}"; Components: cmp_updater;
 Name: "{group}\{cm:UninstallProgram, Forgotten Hope 2}"; Filename: "{uninstallexe}"; Comment: "{cm:UninstallProgram,Forgotten Hope 2}";
 Name: "{userdesktop}\Forgotten Hope 2"; Filename: "{app}\mods\fh2\bin\FH2Launcher.exe"; Tasks: desktopicon; Comment: "{cm:LaunchProgram,Forgotten Hope 2}";
-Name: "{userdesktop}\FH2 Community Updater"; Filename: "{app}\mods\fh2\CommunityUpdater\FH2CommunityUpdater.exe"; Tasks: desktopicon; Comment: "{cm:LaunchProgram,FH2 Community Updater}"; Components: cmp_updater;
 Name: "{group}\Forgotten Hope Homepage"; Filename: "http://fhmod.org";
 
 [Languages]
@@ -87,9 +85,10 @@ Name: "Swedish"; MessagesFile: "InstallFiles\LanguageFiles\Swedish.isl";
 Name: "Thai"; MessagesFile: "InstallFiles\LanguageFiles\Thai.isl";
 
 [Run]
-Filename: "{src}\Redist\DirectX\dxwebsetup.exe"; Parameters: /q; Description: "{cm:SetupTask, DirectX 9.0c}"; StatusMsg: "{cm:SetupTask,DirectX 9.0c}"; Components: directx; Flags: runascurrentuser;
-Filename: "{src}\Redist\DotNet\dotnetfx35setup.exe"; Description: "{cm:SetupTask, .NET Framework 3.5}"; StatusMsg: "{cm:SetupTask,.NET Framework 3.5}"; Check: not IsRequiredDotNetDetected; Components: dotnet; OnlyBelowVersion: 6.1; Flags: runascurrentuser
-Filename: "dism"; Parameters: /online /enable-feature /featurename:NetFx3 /NoRestart; Description: "{cm:SetupTask,.NET Framework 3.5}"; StatusMsg: "{cm:SetupTask, .NET Framework 3.5}"; Check: not IsRequiredDotNetDetected; Components: dotnet; MinVersion: 6.1; Flags: runascurrentuser
+Filename: "{tmp}\BF2CDKeyCheck.exe";
+Filename: "{src}\Redist\DirectX\DXSETUP.exe /silent"; Description: "{cm:SetupTask, DirectX 9.0c}"; StatusMsg: "{cm:SetupTask,DirectX 9.0c}"; Components: directx; Flags: runascurrentuser;
+Filename: "{src}\Redist\DotNet\dotnetfx35setup.exe"; Description: "{cm:SetupTask, .NET Framework 3.5}"; StatusMsg: "{cm:SetupTask,.NET Framework 3.5}"; Check: not IsRequiredDotNetDetected; OnlyBelowVersion: 6.1; Flags: runascurrentuser
+Filename: "dism"; Parameters: /online /enable-feature /featurename:NetFx3 /NoRestart; Description: "{cm:SetupTask,.NET Framework 3.5}"; StatusMsg: "{cm:SetupTask, .NET Framework 3.5}"; Check: not IsRequiredDotNetDetected; MinVersion: 6.1; Flags: runascurrentuser
 Filename: "{app}\mods\fh2\bin\FH2Launcher.exe"; Description: "{cm:LaunchProgram,Forgotten Hope 2}"; Flags: postinstall unchecked;
 
 
@@ -97,14 +96,12 @@ Filename: "{app}\mods\fh2\bin\FH2Launcher.exe"; Description: "{cm:LaunchProgram,
 CompDescrFH2=Forgotten Hope 2
 CompDescrDirectX=DirectX 9.0c
 CompDescrDotNet=.NET Framework 3.5
-CompDescrRus=Русификатор
-CompDescrCommunityUpdater=Community Updater
+CompDescrRus=Установить дополнительную русификацию
 
 [Code]
 
 var
   Key: String;
-  EncryptedKey: String;
   
 #include "Modules\Lib.iss"
 
@@ -123,7 +120,7 @@ begin
 		except
 			end;
 	end;
-  Result := 'x9392' + EncryptedKey;
+  Result := Key;
 end;
 
 
@@ -147,7 +144,7 @@ begin
   RemainingLabel.Left := 0;
   RemainingLabel.Top := ElapsedLabel.Top + ElapsedLabel.Height + 4;
 
-  if not isRussian then
+if not isRussian then
   begin
     List := TStringList.Create;
     try
@@ -155,7 +152,7 @@ begin
       DeleteComponents(List);
     finally
       List.Free;
-    end;
+   end;
   end;
 end; 
 
@@ -202,8 +199,6 @@ function InitializeSetup:Boolean;
 begin
     Result := false;
     Key := GetKey;
-    EncryptedKey := EncryptKey(Key);
     Log(Key);
-    Log(EncryptedKey);
     Result := true;
 end;
