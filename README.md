@@ -6,11 +6,11 @@ Unofficial installer for [Forgotten Hope 2](http://fhmod.org), an award-winning 
 * Includes bare minimum of files from BF2, required to run FH2
 * Multi-language support (all languages availible in the retail game + Russian)
 * Automatic key generation from the hardware, which provides for absolute uniqueness of the generated key
-* Installation of DirectX, .NET Framework 3.5 and FH2 Community Updater
+* Installation of DirectX, .NET Framework 3.5
 
 ## Downloads
-| [Torrent](https://www.dropbox.com/s/ji38au451sou2r1/FH2%20Unofficial%20Standalone.torrent?dl)  | [Google Drive](https://drive.google.com/open?id=1I2MdcTfmkeOqmJ6pwNX_T2huk266V1Ry) | 
-[OneDrive](https://1drv.ms/u/s!ArKl6aZTApvlnRorj6tcniELjcI0) | [Yandex Disk](https://yadi.sk/d/MNuEQ6yt3a9w9V) |
+| [Torrent](https://playfh2.net/FH2%20Unofficial%20Standalone.torrent)  | [Google Drive](https://drive.google.com/file/d/1pv8EanifFFDWar5SL48Hg7eJqCNRSbXK/view) | 
+[OneDrive](https://1drv.ms/u/s!ArKl6aZTApvloXMZF1p7U8_LfmCC?e=nSagG9) | [Yandex Disk](https://yadi.sk/d/BOtMP3iiR3feXQ) |
 
 
 ## Instructions

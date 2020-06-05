@@ -215,7 +215,7 @@ begin
   end;
 end;
 
-function GetKey: String;
+function GenerateKey: String;
 var
 Key, TmpFileName: String;
 ExecStdout: TArrayOfString;
@@ -231,5 +231,5 @@ begin
     except
       Key := GetGuid;
     end;
-  Result := Key + Key;
+  Result := Key;
 end;
