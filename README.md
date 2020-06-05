@@ -12,6 +12,10 @@ Unofficial installer for [Forgotten Hope 2](http://fhmod.org), an award-winning 
 | [Torrent](https://playfh2.net/FH2%20Unofficial%20Standalone.torrent)  | [Google Drive](https://drive.google.com/file/d/1pv8EanifFFDWar5SL48Hg7eJqCNRSbXK/view) | 
 [OneDrive](https://1drv.ms/u/s!ArKl6aZTApvloXMZF1p7U8_LfmCC?e=nSagG9) | [Yandex Disk](https://yadi.sk/d/BOtMP3iiR3feXQ) |
 
+### Checksums
+* md5: 721196d0ed3d5845d75183b24905af1e
+* SHA-1: ee75d4971cc20f766bb0de29e6048d19f20a1569
+
 
 ## Instructions
 1. Mount the downloaded ISO image file with [WinCDEmu](http://wincdemu.sysprogs.org) or similar software (bult-in in Windows 10), or just extract it anywhere with 7-zip, or any other archiver
