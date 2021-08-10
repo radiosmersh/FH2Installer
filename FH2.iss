@@ -1,17 +1,17 @@
 [Setup]
 AppName=Forgotten Hope 2
-AppVerName=Forgotten Hope 2.56
+AppVerName=Forgotten Hope 2.58
 AppCopyright=FH2 Devs
 AppPublisher=FH2 Devs
 AppID={{2FE10CB1-887F-4AE0-AF87-34D5F4A5F6CF}
 AppPublisherURL=http://fhmod.org
 AppSupportURL=http://fhpubforum.warumdarum.de
-AppVersion=2.56
-VersionInfoVersion=2.56
+AppVersion=2.58
+VersionInfoVersion=2.58
 VersionInfoCopyright=FH2 Devs
 VersionInfoCompany=FH2 Devs
-VersionInfoDescription=Forgotten Hope 2.56
-VersionInfoTextVersion=2.56
+VersionInfoDescription=Forgotten Hope 2.58
+VersionInfoTextVersion=2.58
 SetupLogging=yes
 DiskSpanning=true
 DisableReadyPage=yes
