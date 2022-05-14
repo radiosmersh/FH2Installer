@@ -7,7 +7,6 @@ AppPublisher=FH2 Devs
 AppID={{2FE10CB1-887F-4AE0-AF87-34D5F4A5F6CF}
 AppPublisherURL=http://forgottenhope.warumdarum.de
 AppSupportURL=http://fhpubforum.warumdarum.de
-VersionInfoVersion=2.6
 VersionInfoCopyright=FH2 Devs
 VersionInfoCompany=FH2 Devs
 VersionInfoDescription=Forgotten Hope 2.6
@@ -16,7 +15,8 @@ UninstallDisplayName=Forgotten Hope 2
 DefaultDirName={pf32}\Forgotten Hope 2
 DefaultGroupName=Forgotten Hope 2
 SetupLogging=yes
-DiskSpanning=true
+DiskSpanning=no
+DisableFinishedPage=yes
 DisableReadyPage=yes
 DisableWelcomePage=yes
 WizardImageFile=InstallFiles\GFX\modern-wizard.bmp
@@ -24,8 +24,8 @@ WizardSmallImageFile=InstallFiles\GFX\WizardSmallImage.bmp
 SetupIconFile=InstallFiles\GFX\fh2.ico
 LanguageDetectionMethod=uilanguage
 InternalCompressLevel=ultra64
-OutputDir=Output
-OutputBaseFilename=fh2_setup
+OutputDir=Output_slim
+OutputBaseFilename=FH2 Install
 AppendDefaultDirName=true
 UninstallDisplayIcon={app}\mods\fh2\fh2.ico
 Compression=none
@@ -46,12 +46,13 @@ Name: "dotnet"; Description: "{cm:CompDescrDotNet}"; Types: custom;
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
 [Files]
-
 DestName: "WizardForm.TopLogoImage.bmp"; Source: "InstallFiles\GFX\topbar.bmp"; Flags: dontcopy solidbreak
 DestName: "Discord-Logo-Color.bmp"; Source: "InstallFiles\GFX\Discord-Logo-Color.bmp"; Flags: dontcopy solidbreak
-Source: "Files\full\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Components: main;
+Source: "Files\slim\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Components: main;
 Source: "Include\smartctl.exe"; Flags: dontcopy
 Source: "Include\BF2CDKeyCheck.exe"; DestDir: "{tmp}"
+Source: "Redist\*"; DestDir: "{tmp}\Redist"; Flags: ignoreversion recursesubdirs
+Source: "Files\slim\mods\fh2\bin\*.*"; DestDir: "{tmp}\bin"; Flags: ignoreversion recursesubdirs; Components: main
 
 [Registry]
 Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2"; ValueName: "InstallDir"; ValueType: String; ValueData: "{app}"; Flags: deletevalue uninsdeletekey;
@@ -89,12 +90,14 @@ Name: "Vietnamese"; MessagesFile: "InstallFiles\LanguageFiles\Vietnamese.islu";
 
 [Run]
 Filename: "{tmp}\BF2CDKeyCheck.exe"; Flags: runascurrentuser
-Filename: "{src}\Redist\VC++2019\VC_redist.x86.exe"; Description: "{cm:SetupTask,Visual C++ 2019}"; Parameters: "/quiet"; StatusMsg: "{cm:SetupTask,Visual C++ 2019}"; Flags: runascurrentuser; Components: vcpp2019
-Filename: "{src}\Redist\Directx\DXSETUP.exe"; Description: "{cm:SetupTask,DirectX 9.0c}"; Parameters: "/silent"; StatusMsg: "{cm:SetupTask,DirectX 9.0c}"; Flags: runascurrentuser; Components: directx
-Filename: "{tmp}\dotnetfx35.exe"; Description: "{cm:SetupTask,.NET Framework 3.5}"; Parameters: "/qb /norestart"; StatusMsg: "{cm:SetupTask,.NET Framework 3.5}"; OnlyBelowVersion: 6.1; Flags: runascurrentuser; Components: dotnet
-Filename: "dism"; Description: "{cm:SetupTask,.NET Framework 3.5}"; Parameters: /online /enable-feature /featurename:NetFx3 /NoRestart; StatusMsg: "{cm:SetupTask, .NET Framework 3.5}"; MinVersion: 6.1; Flags: runascurrentuser; Components: dotnet
+Filename: "{tmp}\Redist\VC++2019\VC_redist.x86.exe"; Description: "{cm:SetupTask,Visual C++ 2019}"; Parameters: "/quiet"; StatusMsg: "{cm:SetupTask,Visual C++ 2019}"; Flags: runascurrentuser; Components: vcpp2019
+Filename: "{tmp}\Redist\Directx\DXSETUP.exe"; Description: "{cm:SetupTask,DirectX 9.0c}"; Parameters: "/silent"; StatusMsg: "{cm:SetupTask,DirectX 9.0c}"; Flags: runascurrentuser; Components: directx
+Filename: "{tmp}\dotnetfx35.exe"; Description: "{cm:SetupTask,.NET Framework 3.5}"; Parameters: "/qb /norestart"; StatusMsg: "{cm:SetupTask,.NET Framework 3.5}"; OnlyBelowVersion: 6.1; Flags: runascurrentuser; AfterInstall: GetFH2Files
+Filename: "dism"; Description: "{cm:SetupTask,.NET Framework 3.5}"; Parameters: /online /enable-feature /featurename:NetFx3 /NoRestart; StatusMsg: "{cm:SetupTask, .NET Framework 3.5}"; MinVersion: 6.1; Flags: runascurrentuser; AfterInstall: GetFH2Files
 Filename: "{app}\mods\fh2\bin\FH2Launcher.exe"; Description: "{cm:LaunchProgram,Forgotten Hope 2}"; Flags: postinstall unchecked
 
+[UninstallDelete]
+Type: filesandordirs; Name: "{app}"
 
 [CustomMessages]
 CompDescrFH2=Forgotten Hope 2
@@ -107,6 +110,7 @@ CompDescrDotNet=.NET Framework 3.5
 #include "Modules\FH2Utils.iss"
 #include "Modules\Keygen.iss"
 #include "Modules\Language.iss"
+#include "Modules\OS.iss"
 #include "Modules\Time.iss"
 #include "Modules\WizardForm.iss"
 
@@ -114,6 +118,7 @@ var
   Key: String;
   TopLogoImage: TBitmapImage;
   PercentLabel: TNewStaticText;
+  CancelWithoutPrompt: boolean;
 
 function GetKey(Param: String): String;
 begin
@@ -125,6 +130,7 @@ begin
   if CurPageID = wpInstalling then
   begin
     Cancel := False;
+    Confirm := not CancelWithoutPrompt;
     if ExitSetupMsgBox then
     begin
       Cancel := True;
@@ -148,11 +154,13 @@ begin
   if CurStep = ssInstall then
     BackupBF2RegistryEntries;
 end;
+
 function InitializeSetup:Boolean;
 begin
     Result := false;
     Key := GenerateKey;
     Log(Key);
+    CancelWithoutPrompt := false;
     Result := true;
 end;
 
@@ -248,5 +256,52 @@ begin
   PercentLabel.Parent := WizardForm.ProgressGauge.Parent;
   PercentLabel.Left := WizardForm.ProgressGauge.Width div 2;
   PercentLabel.Top := WizardForm.ProgressGauge.Top +
-  WizardForm.ProgressGauge.Height + 12;
+    WizardForm.ProgressGauge.Height + 12;
+end;
+
+procedure GetFH2Files;
+var
+  WindowsVer: TWindowsVersion;
+  WinHttpReq: Variant;
+  BF2Path, DestPath, FullVersion, LauncherPath, ModDescFilePath, Params: String;
+  ResultCode, UploadSpeed: Integer;
+begin
+  WizardForm.StatusLabel.Caption := ExpandConstant('{cm:DownloadingSomething,Forgotten Hope 2}');
+  WinHttpReq := CreateOleObject('WinHttp.WinHttpRequest.5.1');
+  WinHttpReq.Open('GET', 'http://forgottenhope.warumdarum.de/fh2share/latestversion.php', False);
+  try
+    WinHttpReq.Send('');
+  except
+    begin
+      Log('Host timeout');
+      CancelWithoutPrompt := true;
+      WizardForm.Close;
+    end;
+  end;
+  if WinHttpReq.Status <> 200 then
+    begin
+      Log('HTTP Error: ' + IntToStr(WinHttpReq.Status) + ' ' + WinHttpReq.StatusText);
+      MsgBox(ExpandConstant('{cm:FailedToObtainModVersion}'), mbInformation, MB_OK);        
+    end
+  else
+    begin
+      FullVersion := WinHttpReq.ResponseText;
+      LauncherPath := ExpandConstant('{tmp}') + '\bin\FH2Updater.exe';
+      BF2Path := ExpandConstant('{app}');
+      UploadSpeed := 1024 * 1024; // 1 TB/s
+      Params := '--update "' + BF2Path + '" "' + FullVersion + '" ' + IntToStr(UploadSpeed);
+      Log(LauncherPath)
+      Log(Params)
+      Exec(LauncherPath, Params, '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
+      ModDescFilePath := ExpandConstant('{app}') + '\mods\fh2\mod.desc';
+      if not FileExists(ModDescFilePath) then
+      begin
+        ResultCode := MsgBox(ExpandConstant('{cm:FH2UpdateFailed}'), mbError, MB_OK);
+        DestPath := ExpandConstant('app') + '\mods\fh2\bin';
+        if DirExists(DestPath) or CreateDir(DestPath) then
+          DirectoryCopy(ExpandConstant('tmp') + '\bin', DestPath);
+          LauncherPath := ExpandConstant('{app}') + '\mods\fh2\bin\FH2Launcher.exe';
+          Exec(LauncherPath, Params, '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
+      end;
+    end;
 end;
