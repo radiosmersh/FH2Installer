@@ -1,17 +1,17 @@
 [Setup]
 AppName=Forgotten Hope 2
-AppVername=Forgotten Hope 2.6
-AppVersion=2.6
+AppVername=Forgotten Hope 2.61
+AppVersion=2.61
 AppCopyright=FH2 Devs
 AppPublisher=FH2 Devs
 AppID={{2FE10CB1-887F-4AE0-AF87-34D5F4A5F6CF}
 AppPublisherURL=http://forgottenhope.warumdarum.de
 AppSupportURL=http://fhpubforum.warumdarum.de
-VersionInfoVersion=2.6
+VersionInfoVersion=2.61
 VersionInfoCopyright=FH2 Devs
 VersionInfoCompany=FH2 Devs
-VersionInfoDescription=Forgotten Hope 2.6
-VersionInfoTextVersion=2.6
+VersionInfoDescription=Forgotten Hope 2.61
+VersionInfoTextVersion=2.61
 UninstallDisplayName=Forgotten Hope 2
 DefaultDirName={pf32}\Forgotten Hope 2
 DefaultGroupName=Forgotten Hope 2
