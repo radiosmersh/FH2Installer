@@ -9,12 +9,10 @@ Unofficial installer for [Forgotten Hope 2](http://fhmod.org), an award-winning 
 * Installation of DirectX, .NET Framework 3.5
 
 ## Downloads
-| [Torrent](https://playfh2.net/FH2%20Unofficial%20Standalone.torrent)  | [Google Drive](https://drive.google.com/file/d/1pv8EanifFFDWar5SL48Hg7eJqCNRSbXK/view) | 
-[OneDrive](https://1drv.ms/u/s!ArKl6aZTApvloXMZF1p7U8_LfmCC?e=nSagG9) | [Yandex Disk](https://yadi.sk/d/BOtMP3iiR3feXQ) |
+Visit https://playfh2.net/download for up-to-date links
 
 ### Checksums
 * md5: 0d17bc00c7b80bbc6d112c4ba5672a05
-* SHA-1: a531d741cb8fab4a58895ab1b31677e7d701bc08
 * SHA-256: 6f9ca091a6c17b2da7b22cfe9b80a086a37483b305f43b45fee879fd54234781
 
 
