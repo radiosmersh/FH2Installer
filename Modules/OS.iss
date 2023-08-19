@@ -1,5 +1,13 @@
 [Code]
 
+function IsRunningUnderWine: Boolean;
+begin
+  if RegKeyExists(HKLM, 'SOFTWARE\Wine') then
+    Result := True
+  else
+    Result := False;
+end;
+
 procedure DirectoryCopy(SourcePath, DestPath: string);
 var
   FindRec: TFindRec;

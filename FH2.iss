@@ -1,19 +1,19 @@
 [Setup]
 AppName=Forgotten Hope 2
-AppVername=Forgotten Hope 2.61
-AppVersion=2.61
+AppVername=Forgotten Hope 2.63
+AppVersion=2.63
 AppCopyright=FH2 Devs
 AppPublisher=FH2 Devs
 AppID={{2FE10CB1-887F-4AE0-AF87-34D5F4A5F6CF}
 AppPublisherURL=http://forgottenhope.warumdarum.de
-AppSupportURL=http://fhpubforum.warumdarum.de
-VersionInfoVersion=2.61
+AppSupportURL=https://discord.gg/hU878P4
+VersionInfoVersion=2.63
 VersionInfoCopyright=FH2 Devs
 VersionInfoCompany=FH2 Devs
-VersionInfoDescription=Forgotten Hope 2.61
-VersionInfoTextVersion=2.61
+VersionInfoDescription=Forgotten Hope 2.63
+VersionInfoTextVersion=2.63
 UninstallDisplayName=Forgotten Hope 2
-DefaultDirName={pf32}\Forgotten Hope 2
+DefaultDirName={commonpf32}\Forgotten Hope 2
 DefaultGroupName=Forgotten Hope 2
 SetupLogging=yes
 DiskSpanning=true
@@ -31,7 +31,6 @@ UninstallDisplayIcon={app}\mods\fh2\fh2.ico
 Compression=none
 AllowRootDirectory=true
 CompressionThreads=auto
-WizardImageAlphaFormat=premultiplied 
 
 [Types]
 Name: "custom"; Description: "Custom installation"; Flags: iscustom
@@ -48,9 +47,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 
 DestName: "WizardForm.TopLogoImage.bmp"; Source: "InstallFiles\GFX\topbar.bmp"; Flags: dontcopy solidbreak
-DestName: "Discord-Logo-Color.bmp"; Source: "InstallFiles\GFX\Discord-Logo-Color.bmp"; Flags: dontcopy solidbreak
-Source: "Files\full\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Components: main;
-Source: "Include\smartctl.exe"; Flags: dontcopy
+DestName: "discord.ico"; Source: "InstallFiles\GFX\discord.ico"; Flags: dontcopy solidbreak
+Source: "Files\standalone\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Components: main;
 Source: "Include\BF2CDKeyCheck.exe"; DestDir: "{tmp}"
 
 [Registry]
@@ -76,16 +74,16 @@ Name: "{group}\Forgotten Hope Homepage"; Filename: "http://fhmod.org";
 
 [Languages]
 Name: "Belarusian"; MessagesFile: "InstallFiles\LanguageFiles\Belarusian.isl"; 
-Name: "English"; MessagesFile: "InstallFiles\LanguageFiles\English.isl"; 
-Name: "Russian"; MessagesFile: "InstallFiles\LanguageFiles\Russian.isl"; 
-Name: "Dutch"; MessagesFile: "InstallFiles\LanguageFiles\Dutch.isl"; 
-Name: "French"; MessagesFile: "InstallFiles\LanguageFiles\French.isl"; 
-Name: "German"; MessagesFile: "InstallFiles\LanguageFiles\German.isl";
-Name: "Polish"; MessagesFile: "InstallFiles\LanguageFiles\Polish.isl"; 
-Name: "Spanish"; MessagesFile: "InstallFiles\LanguageFiles\Spanish.isl"; 
+Name: "English"; MessagesFile: "compiler:Default.isl,InstallFiles\LanguageFiles\English.isl"; 
+Name: "Russian"; MessagesFile: "compiler:Languages\Russian.isl,InstallFiles\LanguageFiles\Russian.isl"; 
+Name: "Dutch"; MessagesFile: "compiler:Languages\Dutch.isl,InstallFiles\LanguageFiles\Dutch.isl"; 
+Name: "French"; MessagesFile: "compiler:Languages\French.isl,InstallFiles\LanguageFiles\French.isl"; 
+Name: "German"; MessagesFile: "compiler:Languages\German.isl,InstallFiles\LanguageFiles\German.isl";
+Name: "Polish"; MessagesFile: "compiler:Languages\Polish.isl,InstallFiles\LanguageFiles\Polish.isl"; 
+Name: "Spanish"; MessagesFile: "compiler:Languages\Spanish.isl,InstallFiles\LanguageFiles\Spanish.isl"; 
 Name: "Swedish"; MessagesFile: "InstallFiles\LanguageFiles\Swedish.isl"; 
-Name: "Ukrainian"; MessagesFile: "InstallFiles\LanguageFiles\Ukrainian.isl"; 
-Name: "Vietnamese"; MessagesFile: "InstallFiles\LanguageFiles\Vietnamese.islu"; 
+Name: "Ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl,InstallFiles\LanguageFiles\Ukrainian.isl"; 
+Name: "Vietnamese"; MessagesFile: "InstallFiles\LanguageFiles\Vietnamese.isl"; 
 
 [Run]
 Filename: "{tmp}\BF2CDKeyCheck.exe"; Flags: runascurrentuser
@@ -107,6 +105,7 @@ CompDescrDotNet=.NET Framework 3.5
 #include "Modules\FH2Utils.iss"
 #include "Modules\Keygen.iss"
 #include "Modules\Language.iss"
+#include "Modules\OS.iss"
 #include "Modules\Time.iss"
 #include "Modules\WizardForm.iss"
 
@@ -238,6 +237,22 @@ begin
   end;
 end;
 
+procedure CurPageChanged(CurPageID: Integer);
+begin
+  case CurPageID of   
+    wpSelectComponents: begin
+      // Uncheck redist components when installer is running under Wine
+      if IsRunningUnderWine() then
+      begin
+        Log('Running under Wine');
+        WizardSelectComponents('!vcpp2019');
+        WizardSelectComponents('!directx');
+        WizardSelectComponents('!dotnet');
+        MsgBox(ExpandConstant('{cm:WinePrompt}'), mbInformation, MB_OK)
+      end;
+    end;
+  end;
+end;
 
 procedure InitializeWizard;
 begin
