@@ -11,11 +11,6 @@ Unofficial installer for [Forgotten Hope 2](http://fhmod.org), an award-winning 
 ## Downloads
 Visit https://playfh2.net/download for up-to-date links
 
-### Checksums
-* md5: 0d17bc00c7b80bbc6d112c4ba5672a05
-* SHA-256: 6f9ca091a6c17b2da7b22cfe9b80a086a37483b305f43b45fee879fd54234781
-
-
 ## Instructions
 1. Mount the downloaded ISO image file with [WinCDEmu](http://wincdemu.sysprogs.org) or similar software (bult-in in Windows 10), or just extract it anywhere with 7-zip, or any other archiver
 2. Run the **fh2_setup.exe** installer and wait for the file extraction to finish.
