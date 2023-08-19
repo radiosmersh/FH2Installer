@@ -9,7 +9,7 @@ Unofficial installer for [Forgotten Hope 2](http://fhmod.org), an award-winning 
 * Installation of DirectX, .NET Framework 3.5
 
 ## Downloads
-Visit https://playfh2.net/download for up-to-date links
+Visit https://playfh2.net/download for up-to-date downloads.
 
 ## Instructions
 1. Mount the downloaded ISO image file with [WinCDEmu](http://wincdemu.sysprogs.org) or similar software (bult-in in Windows 10), or just extract it anywhere with 7-zip, or any other archiver
