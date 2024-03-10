@@ -1,7 +1,7 @@
 [Setup]
 AppName=Forgotten Hope 2
-AppVername=Forgotten Hope 2.63
-AppVersion=2.63
+AppVername=Forgotten Hope 2.64
+AppVersion=2.64
 AppCopyright=FH2 Devs
 AppPublisher=FH2 Devs
 AppID={{2FE10CB1-887F-4AE0-AF87-34D5F4A5F6CF}
@@ -9,8 +9,8 @@ AppPublisherURL=http://forgottenhope.warumdarum.de
 AppSupportURL=http://fhpubforum.warumdarum.de
 VersionInfoCopyright=FH2 Devs
 VersionInfoCompany=FH2 Devs
-VersionInfoDescription=Forgotten Hope 2.63
-VersionInfoTextVersion=2.63
+VersionInfoDescription=Forgotten Hope 2.64
+VersionInfoTextVersion=2.64
 UninstallDisplayName=Forgotten Hope 2
 DefaultDirName={pf32}\Forgotten Hope 2
 DefaultGroupName=Forgotten Hope 2
@@ -45,12 +45,13 @@ Name: "dotnet"; Description: "{cm:CompDescrDotNet}"; Types: custom;
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
 [Files]
-DestName: "WizardForm.TopLogoImage.bmp"; Source: "InstallFiles\GFX\topbar.bmp"; Flags: dontcopy solidbreak
-DestName: "discord.ico"; Source: "InstallFiles\GFX\discord.ico"; Flags: dontcopy solidbreak
+DestName: "WizardForm.TopLogoImage.bmp"; Source: "InstallFiles\GFX\topbar.bmp"; Flags: dontcopy solidbreak;
+DestName: "discord.ico"; Source: "InstallFiles\GFX\discord.ico"; Flags: dontcopy solidbreak;
 Source: "Files\slim\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Components: main;
-Source: "Include\BF2CDKeyCheck.exe"; DestDir: "{tmp}"
-Source: "Redist\*"; DestDir: "{tmp}\Redist"; Flags: ignoreversion recursesubdirs
-Source: "Files\slim\mods\fh2\bin\*.*"; DestDir: "{tmp}\bin"; Flags: ignoreversion recursesubdirs; Components: main
+Source: "Include\smartctl.exe"; Flags: dontcopy;
+Source: "Include\BF2CDKeyCheck.exe"; DestDir: "{tmp}";
+Source: "Redist\*"; DestDir: "{tmp}\Redist"; Flags: ignoreversion recursesubdirs;
+Source: "Files\slim\mods\fh2\bin\*.*"; DestDir: "{tmp}\bin"; Flags: ignoreversion recursesubdirs; Components: main;
 
 [Registry]
 Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2"; ValueName: "InstallDir"; ValueType: String; ValueData: "{app}"; Flags: deletevalue uninsdeletekey;
@@ -90,8 +91,7 @@ Name: "Vietnamese"; MessagesFile: "InstallFiles\LanguageFiles\Vietnamese.isl";
 Filename: "{tmp}\BF2CDKeyCheck.exe"; Flags: runascurrentuser
 Filename: "{tmp}\Redist\VC++2019\VC_redist.x86.exe"; Description: "{cm:SetupTask,Visual C++ 2019}"; Parameters: "/quiet"; StatusMsg: "{cm:SetupTask,Visual C++ 2019}"; Flags: runascurrentuser; Components: vcpp2019
 Filename: "{tmp}\Redist\Directx\DXSETUP.exe"; Description: "{cm:SetupTask,DirectX 9.0c}"; Parameters: "/silent"; StatusMsg: "{cm:SetupTask,DirectX 9.0c}"; Flags: runascurrentuser; Components: directx
-Filename: "{tmp}\dotnetfx35.exe"; Description: "{cm:SetupTask,.NET Framework 3.5}"; Parameters: "/qb /norestart"; StatusMsg: "{cm:SetupTask,.NET Framework 3.5}"; OnlyBelowVersion: 6.1; Flags: runascurrentuser; AfterInstall: GetFH2Files
-Filename: "dism"; Description: "{cm:SetupTask,.NET Framework 3.5}"; Parameters: /online /enable-feature /featurename:NetFx3 /NoRestart; StatusMsg: "{cm:SetupTask, .NET Framework 3.5}"; MinVersion: 6.1; Flags: runascurrentuser; AfterInstall: GetFH2Files
+Filename: "{tmp}\Redist\dotNetFx40_Full_x86_x64.exe"; Description: "{cm:SetupTask,.NET Framework 4.0}"; Parameters: "/qb /norestart"; StatusMsg: "{cm:SetupTask,.NET Framework 4.0}"; OnlyBelowVersion: 6.1; Flags: runascurrentuser; AfterInstall: GetFH2Files
 Filename: "{app}\mods\fh2\bin\FH2Launcher.exe"; Description: "{cm:LaunchProgram,Forgotten Hope 2}"; Flags: postinstall unchecked
 
 [UninstallDelete]
@@ -101,10 +101,9 @@ Type: filesandordirs; Name: "{app}"
 CompDescrFH2=Forgotten Hope 2
 CompDescrVCPP2019=Visual C++ 2019
 CompDescrDirectX=DirectX 9.0c
-CompDescrDotNet=.NET Framework 3.5
+CompDescrDotNet=.NET Framework 4.0
 
 [Code]
-
 #include "Modules\FH2Utils.iss"
 #include "Modules\Keygen.iss"
 #include "Modules\Language.iss"
