@@ -1,19 +1,22 @@
+#include "Common.iss"
+
 [Setup]
-AppName=Forgotten Hope 2
-AppVername=Forgotten Hope 2.64
-AppVersion=2.64
-AppCopyright=FH2 Devs
-AppPublisher=FH2 Devs
-AppID={{2FE10CB1-887F-4AE0-AF87-34D5F4A5F6CF}
-AppPublisherURL=http://forgottenhope.warumdarum.de
-AppSupportURL=http://fhpubforum.warumdarum.de
-VersionInfoCopyright=FH2 Devs
-VersionInfoCompany=FH2 Devs
-VersionInfoDescription=Forgotten Hope 2.64
-VersionInfoTextVersion=2.64
-UninstallDisplayName=Forgotten Hope 2
-DefaultDirName={pf32}\Forgotten Hope 2
-DefaultGroupName=Forgotten Hope 2
+AppName={#AppName}
+AppVername={#AppVername}
+AppVersion={#AppVersion}
+AppCopyright={#AppCopyright}
+AppPublisher={#AppPublisher}
+AppID={{#AppID}
+AppPublisherURL={#AppPublisherURL}
+AppSupportURL={#AppSupportURL}
+VersionInfoVersion={#VersionInfoVersion}
+VersionInfoCopyright={#VersionInfoCopyright}
+VersionInfoCompany={#VersionInfoCompany}
+VersionInfoDescription={#VersionInfoDescription}
+VersionInfoTextVersion={#VersionInfoTextVersion}
+UninstallDisplayName={#UninstallDisplayName}
+DefaultDirName={#DefaultDirName}
+DefaultGroupName={#DefaultGroupName}
 SetupLogging=yes
 DiskSpanning=no
 DisableFinishedPage=yes
@@ -32,18 +35,6 @@ Compression=none
 AllowRootDirectory=true
 CompressionThreads=auto
 
-[Types]
-Name: "custom"; Description: "Custom installation"; Flags: iscustom
-
-[Components]
-Name: "main"; Description: "{cm:CompDescrFH2}"; Types: custom; Flags: fixed
-Name: "vcpp2019"; Description: "{cm:CompDescrVCPP2019}"; Types: custom;
-Name: "directx"; Description: "{cm:CompDescrDirectX}"; Types: custom;
-Name: "dotnet"; Description: "{cm:CompDescrDotNet}"; Types: custom;
-
-[Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
-
 [Files]
 DestName: "WizardForm.TopLogoImage.bmp"; Source: "InstallFiles\GFX\topbar.bmp"; Flags: dontcopy solidbreak;
 DestName: "discord.ico"; Source: "InstallFiles\GFX\discord.ico"; Flags: dontcopy solidbreak;
@@ -53,55 +44,12 @@ Source: "Include\BF2CDKeyCheck.exe"; DestDir: "{tmp}";
 Source: "Redist\*"; DestDir: "{tmp}\Redist"; Flags: ignoreversion recursesubdirs;
 Source: "Files\slim\mods\fh2\bin\*.*"; DestDir: "{tmp}\bin"; Flags: ignoreversion recursesubdirs; Components: main;
 
-[Registry]
-Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2"; ValueName: "InstallDir"; ValueType: String; ValueData: "{app}"; Flags: deletevalue uninsdeletekey;
-Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2"; ValueName: "Locale"; ValueType: String; ValueData: "{code:SetLocale}"; Flags: deletevalue uninsdeletekey;
-Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2"; ValueName: "Language"; ValueType: String; ValueData: "{code:SetLanguage}"; Flags: deletevalue uninsdeletekey;
-Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2"; ValueName: "Version"; ValueType: String; ValueData: "1.5"; Flags: deletevalue uninsdeletekey; 
-Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2\ergc"; ValueName: ; ValueType: string; ValueData: "{code:GetKey}"; Flags: deletevalue uninsdeletekey; 
-Root: HKLM32; Subkey: "SOFTWARE\Electronic Arts\EA Games\Battlefield 2\wdc"; ValueName: ; ValueType: string; ValueData: "true"; Flags: deletevalue uninsdeletekey;
-; FH2 URL Protocol
-Root: HKCR; Subkey: "fh2"; ValueName: ; ValueType: string; ValueData: "URL:FH2 Protocol"; Flags: uninsdeletekey;
-Root: HKCR; Subkey: "fh2"; ValueName: "URL Protocol"; ValueType: string; ValueData: ; Flags: uninsdeletekey;
-Root: HKCR; Subkey: "fh2"; ValueName: "ShellFolder"; ValueType: string; ValueData: "{app}"; Flags: uninsdeletekey;
-Root: HKCR; Subkey: "fh2\shell"; ValueName: ; ValueType: string; ValueData: "open"; Flags: uninsdeletekey;
-Root: HKCR; Subkey: "fh2\shell\open"; Flags: uninsdeletekey;
-Root: HKCR; Subkey: "fh2\shell\open\command"; ValueName:; ValueType: string; ValueData: "{app}\mods\fh2\bin\FH2Launcher.exe ""%1"""; Flags: uninsdeletekey;
-
-[Icons]
-Name: "{group}\Forgotten Hope 2"; Filename: "{app}\mods\fh2\bin\FH2Launcher.exe"; Comment: "{cm:LaunchProgram,Forgotten Hope 2}";
-Name: "{group}\{cm:UninstallProgram, Forgotten Hope 2}"; Filename: "{uninstallexe}"; Comment: "{cm:UninstallProgram,Forgotten Hope 2}";
-Name: "{commondesktop}\Forgotten Hope 2"; Filename: "{app}\mods\fh2\bin\FH2Launcher.exe"; Tasks: desktopicon; Comment: "{cm:LaunchProgram,Forgotten Hope 2}";
-Name: "{group}\Forgotten Hope Homepage"; Filename: "http://fhmod.org";
-
-[Languages]
-Name: "Belarusian"; MessagesFile: "InstallFiles\LanguageFiles\Belarusian.isl"; 
-Name: "English"; MessagesFile: "compiler:Default.isl,InstallFiles\LanguageFiles\English.isl"; 
-Name: "Russian"; MessagesFile: "compiler:Languages\Russian.isl,InstallFiles\LanguageFiles\Russian.isl"; 
-Name: "Dutch"; MessagesFile: "compiler:Languages\Dutch.isl,InstallFiles\LanguageFiles\Dutch.isl"; 
-Name: "French"; MessagesFile: "compiler:Languages\French.isl,InstallFiles\LanguageFiles\French.isl"; 
-Name: "German"; MessagesFile: "compiler:Languages\German.isl,InstallFiles\LanguageFiles\German.isl";
-Name: "Polish"; MessagesFile: "compiler:Languages\Polish.isl,InstallFiles\LanguageFiles\Polish.isl"; 
-Name: "Spanish"; MessagesFile: "compiler:Languages\Spanish.isl,InstallFiles\LanguageFiles\Spanish.isl"; 
-Name: "Swedish"; MessagesFile: "InstallFiles\LanguageFiles\Swedish.isl"; 
-Name: "Ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl,InstallFiles\LanguageFiles\Ukrainian.isl"; 
-Name: "Vietnamese"; MessagesFile: "InstallFiles\LanguageFiles\Vietnamese.isl"; 
-
 [Run]
 Filename: "{tmp}\BF2CDKeyCheck.exe"; Flags: runascurrentuser
 Filename: "{tmp}\Redist\VC++2019\VC_redist.x86.exe"; Description: "{cm:SetupTask,Visual C++ 2019}"; Parameters: "/quiet"; StatusMsg: "{cm:SetupTask,Visual C++ 2019}"; Flags: runascurrentuser; Components: vcpp2019
-Filename: "{tmp}\Redist\Directx\DXSETUP.exe"; Description: "{cm:SetupTask,DirectX 9.0c}"; Parameters: "/silent"; StatusMsg: "{cm:SetupTask,DirectX 9.0c}"; Flags: runascurrentuser; Components: directx
-Filename: "{tmp}\Redist\dotNetFx40_Full_x86_x64.exe"; Description: "{cm:SetupTask,.NET Framework 4.0}"; Parameters: "/qb /norestart"; StatusMsg: "{cm:SetupTask,.NET Framework 4.0}"; OnlyBelowVersion: 6.1; Flags: runascurrentuser; AfterInstall: GetFH2Files
+Filename: "{tmp}\Redist\Directx\DirectX.exe"; Description: "{cm:SetupTask,DirectX 9.0c}"; StatusMsg: "{cm:SetupTask,DirectX 9.0c}"; Flags: runascurrentuser; Components: directx
+Filename: "{tmp}\Redist\DotNet\NDP472-KB4054530-x86-x64-AllOS-ENU.exe"; Description: "{cm:SetupTask,.NET Framework 4.7.2}"; Parameters: "/q /norestart"; StatusMsg: "{cm:SetupTask,.NET Framework 4.7.2}"; Check: (not IsRunningUnderWine) and IsWin81OrBelow; Flags: runascurrentuser; Components: dotnet; AfterInstall: GetFH2Files
 Filename: "{app}\mods\fh2\bin\FH2Launcher.exe"; Description: "{cm:LaunchProgram,Forgotten Hope 2}"; Flags: postinstall unchecked
-
-[UninstallDelete]
-Type: filesandordirs; Name: "{app}"
-
-[CustomMessages]
-CompDescrFH2=Forgotten Hope 2
-CompDescrVCPP2019=Visual C++ 2019
-CompDescrDirectX=DirectX 9.0c
-CompDescrDotNet=.NET Framework 4.0
 
 [Code]
 #include "Modules\FH2Utils.iss"
@@ -282,14 +230,13 @@ end;
 
 procedure GetFH2Files;
 var
-  WindowsVer: TWindowsVersion;
   WinHttpReq: Variant;
   BF2Path, DestPath, FullVersion, LauncherPath, ModDescFilePath, Params: String;
   ResultCode, UploadSpeed: Integer;
 begin
   WizardForm.StatusLabel.Caption := ExpandConstant('{cm:DownloadingSomething,Forgotten Hope 2}');
   WinHttpReq := CreateOleObject('WinHttp.WinHttpRequest.5.1');
-  WinHttpReq.Open('GET', 'http://forgottenhope.warumdarum.de/fh2share/latestversion.php', False);
+  WinHttpReq.Open('GET', 'https://forgottenhope.warumdarum.de/fh2share/latestversion.php', False);
   try
     WinHttpReq.Send('');
   except
