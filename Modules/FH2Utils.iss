@@ -5,6 +5,7 @@ ShortVersion: string;
 function GetFH2Version(Param: string): string;
 var
   WinHttpReq: Variant;
+  ResponseText: string;
 begin
   if ShortVersion = '' then
   begin
@@ -17,8 +18,9 @@ begin
     end
       else
     begin
-      ShortVersion := Trim(WinHttpReq.ResponseText);
-      Log('FH2 Version: ' + ShortVersion);
+      ResponseText := WinHttpReq.ResponseText;
+      ShortVersion := Trim(ResponseText);
+      Log('Retrieved latest FH2 version: ' + ShortVersion);
     end;
   end;
   Result := ShortVersion;
