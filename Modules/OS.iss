@@ -8,6 +8,14 @@ begin
     Result := False;
 end;
 
+function IsWin81OrBelow: Boolean;
+var
+  Version: TWindowsVersion;
+begin
+  GetWindowsVersionEx(Version);
+  Result := (Version.Major < 10); // Windows 10 is 10.0, so everything below 10 is 8.1 or lower
+end;
+
 procedure DirectoryCopy(SourcePath, DestPath: string);
 var
   FindRec: TFindRec;
@@ -24,7 +32,7 @@ begin
           DestFilePath := DestPath + '\' + FindRec.Name;
           if FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY = 0 then
           begin
-            if FileCopy(SourceFilePath, DestFilePath, False) then
+            if CopyFile(SourceFilePath, DestFilePath, False) then
             begin
               Log(Format('Copied %s to %s', [SourceFilePath, DestFilePath]));
             end
