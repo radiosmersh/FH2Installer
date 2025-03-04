@@ -339,7 +339,7 @@ ShutdownBlockReasonUninstallingApp=Выдаленне %1.
 
 [CustomMessages]
 
-NameAndVersion=%1 версія %2
+NameAndVersion=%1 версія %2...
 AdditionalIcons=Дадатковыя ярлыкі:
 CreateDesktopIcon=Стварыць ярлык на &працоўным стале
 CreateQuickLaunchIcon=Стварыць ярлык на панэлі &хуткага запуску
@@ -351,19 +351,12 @@ AssocingFileExtension=&Звязаць %1 з файламі, якія маюць пашырэнне %2...
 AutoStartProgramGroupDescription=Аўтазапуск:
 AutoStartProgram=Аўтаматычна запускаць %1
 AddonHostProgramNotFound=%1 не знойдзены ў азначанай вамі папцы.%n%nУсё роўна хочаце працягнуць?
-SetupTask=Installationsprogram for %1
-ExtractedFile=Extracting file:
-Extracted=Unpacking archives:
-ElapsedTime=Time passed:
-RemainingTime=Time left:
-EstimatedTime=Total:
-AllElapsedTime=Installation time:
-Error=Unpacking error!
-ButtonCancel=Annulla
-DownloadingSomething=Downloading %1...
-FailedToObtainModVersion = Cannot obtain the latest mod version, please launch the installation manually by selecting "Update" option in the launcher.
-BackupBF2RegistryEntries = Setup detected Battlefield 2 installation. The registry entries will be overwritten during the setup. Do you want to create a backup?
-SaveRegistryFile = Save registry backup
-FileSaved = File successfully saved to %1.
-FileNotSaved = Failed to save the file.
-FH2UpdateFailed = The setup detected that FH2 update was interrupted. This most likely means that the game is unplayable. Please restart the update process by opening "Options" in FH2 Launcher, navigating to "Update/Repair" and clicking "Repair" button.
+SetupTask=Усталяванне %1
+DownloadingSomething=Спампоўка %1...
+FailedToObtainModVersion = Немагчыма атрымаць апошнюю версію мода, запусціце ўстаноўку ўручную, выбраўшы опцыю «Абнавіць» у праграме запуску.
+BackupBF2RegistryEntries = Праграма ўстаноўкі выявіла існуючую ўстаноўку Battlefield 2. Адпаведныя запісы рэестра будуць перазапісаны падчас наладкі. Хочаце стварыць рэзервовую копію?
+SaveRegistryFile = Захаваць рэзервовую копію рэестра
+FileSaved = Файл паспяхова захаваны ў %1.
+FileNotSaved = Не ўдалося захаваць файл.
+FH2UpdateFailed = Усталяванне выявіла, што абнаўленне FH2 было перапынена. Гэта, хутчэй за ўсё, азначае, што ў гульню нельга гуляць. Калі ласка, перазапусціце працэс абнаўлення, адкрыўшы «Options» ў FH2 Launcher, перайшоўшы ў «Update/Repair» і націснуўшы кнопку «Repair».
+WinePrompt = Праграма ўстаноўкі выявіла, што ўстаноўка была запушчана праз Wine. Калі гэта не так, ігнаруйце гэта паведамленне. У адваротным выпадку вам не трэба ўсталёўваць якія-небудзь кампаненты, якія можна распаўсюджваць - замест гэтага ўсталюйце vcrun2019 у прэфікс гульні праз winetricks.
