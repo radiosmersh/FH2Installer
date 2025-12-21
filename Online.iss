@@ -22,13 +22,14 @@ DiskSpanning=no
 DisableFinishedPage=yes
 DisableReadyPage=yes
 DisableWelcomePage=yes
+;PrivilegesRequired=admin
 WizardImageFile=InstallFiles\GFX\modern-wizard.bmp
 WizardSmallImageFile=InstallFiles\GFX\WizardSmallImage.bmp
 SetupIconFile=InstallFiles\GFX\fh2.ico
 LanguageDetectionMethod=uilanguage
 InternalCompressLevel=ultra64
 OutputDir=Output_online
-OutputBaseFilename=FH2 Slim Installer
+OutputBaseFilename=FH2 Online Installer
 AppendDefaultDirName=true
 UninstallDisplayIcon={app}\mods\fh2\fh2.ico
 Compression=none
@@ -43,32 +44,99 @@ Source: "Include\smartctl.exe"; Flags: dontcopy;
 Source: "Include\BF2CDKeyCheck.exe"; DestDir: "{tmp}";
 Source: "Redist\*"; DestDir: "{tmp}\Redist"; Flags: ignoreversion recursesubdirs;
 Source: "Files\slim\mods\fh2\bin\*.*"; DestDir: "{tmp}\bin"; Flags: ignoreversion recursesubdirs; Components: main;
+Source: "Files\slim\BF2.exe"; DestDir: "{app}"; Flags: ignoreversion; components: main;
 
 [Run]
 Filename: "{tmp}\BF2CDKeyCheck.exe"; Flags: runascurrentuser
 Filename: "{tmp}\Redist\VC++2019\VC_redist.x86.exe"; Description: "{cm:SetupTask,Visual C++ 2019}"; Parameters: "/quiet"; StatusMsg: "{cm:SetupTask,Visual C++ 2019}"; Flags: runascurrentuser; Components: vcpp2019
 Filename: "{tmp}\Redist\Directx\DirectX.exe"; Description: "{cm:SetupTask,DirectX 9.0c}"; StatusMsg: "{cm:SetupTask,DirectX 9.0c}"; Flags: runascurrentuser; Components: directx
-Filename: "{tmp}\Redist\DotNet\NDP472-KB4054530-x86-x64-AllOS-ENU.exe"; Description: "{cm:SetupTask,.NET Framework 4.7.2}"; Parameters: "/q /norestart"; StatusMsg: "{cm:SetupTask,.NET Framework 4.7.2}"; Check: (not IsRunningUnderWine) and IsWin81OrBelow; Flags: runascurrentuser; Components: dotnet; AfterInstall: GetFH2Files
-Filename: "{app}\mods\fh2\bin\FH2Launcher.exe"; Description: "{cm:LaunchProgram,Forgotten Hope 2}"; Flags: postinstall unchecked
+Filename: "{tmp}\Redist\DotNet\NDP472-KB4054530-x86-x64-AllOS-ENU.exe"; Description: "{cm:SetupTask,.NET Framework 4.7.2}"; Parameters: "/q /norestart"; StatusMsg: "{cm:SetupTask,.NET Framework 4.7.2}"; Check: (not IsRunningUnderWine) and IsWin81OrBelow; Flags: runascurrentuser; Components: dotnet;
+;Filename: "{app}\mods\fh2\bin\FH2Launcher.exe"; Description: "{cm:LaunchProgram,Forgotten Hope 2}"; Flags: postinstall unchecked
+FileName: "{cmd}"; Parameters: "/C echo noop"; Flags: runhidden; Description: "{cm:DownloadingSomething,Forgotten Hope 2}"; BeforeInstall: CheckGetFH2Files;
 
 [Code]
 #include "Modules\FH2Utils.iss"
 #include "Modules\Keygen.iss"
 #include "Modules\Language.iss"
+#include "Modules\Misc.iss"
 #include "Modules\OS.iss"
 #include "Modules\Time.iss"
 #include "Modules\WizardForm.iss"
+
+
 
 var
   Key: String;
   TopLogoImage: TBitmapImage;
   PercentLabel: TNewStaticText;
-  CancelWithoutPrompt: boolean;
+  CancelWithoutPrompt: Boolean;
+  FH2UpdateSuccess: Boolean;
 
 function GetKey(Param: String): String;
 begin
   Result := Key;
 end;
+
+procedure GetFH2Files;
+var
+  WinHttpReq: Variant;
+  BF2Path, DestPath, FullVersion, LauncherPath, ModDescFilePath, Params: String;
+  ResultCode, UploadSpeed: Integer;
+  ExceptionMessage: String;
+begin
+  FH2UpdateSuccess := False;
+  WizardForm.StatusLabel.Caption := ExpandConstant('{cm:DownloadingSomething,Forgotten Hope 2}');
+  
+  try
+    WinHttpReq := CreateOleObject('WinHttp.WinHttpRequest.5.1');
+    WinHttpReq.Open('GET', 'https://fhmod.org/fh2share/latestversion.php', False);
+    WinHttpReq.Send('');
+ 
+    if WinHttpReq.Status <> 200 then
+      begin
+        Log('HTTP Error: ' + IntToStr(WinHttpReq.Status) + ' ' + WinHttpReq.StatusText);
+        MsgBox(ExpandConstant('{cm:FailedToObtainModVersion}'), mbInformation, MB_OK);        
+      end
+    else
+      begin
+        FullVersion := WinHttpReq.ResponseText;
+        LauncherPath := ExpandConstant('{tmp}') + '\bin\FH2Updater.exe';
+        BF2Path := ExpandConstant('{app}');
+        UploadSpeed := 1024 * 1024; // 1 TB/s
+        Params := '--update "' + BF2Path + '" "' + FullVersion + '" ' + IntToStr(UploadSpeed);
+        Log(LauncherPath);
+        Log(Params);
+        Exec(LauncherPath, Params, '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
+        ModDescFilePath := ExpandConstant('{app}') + '\mods\fh2\mod.desc';
+        if not FileExists(ModDescFilePath) then
+        begin
+          ResultCode := MsgBox(ExpandConstant('{cm:FH2UpdateFailed}'), mbError, MB_OK);
+          DestPath := ExpandConstant('{app}') + '\mods\fh2\bin';
+          if DirExists(DestPath) or CreateDir(DestPath) then
+            DirectoryCopy(ExpandConstant('tmp') + '\bin', DestPath);
+            LauncherPath := ExpandConstant('{app}') + '\mods\fh2\bin\FH2Launcher.exe';
+            Exec(LauncherPath, Params, '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
+        end;
+      end;
+  except
+    ExceptionMessage := GetExceptionMessage;
+    Log('Failed to create WinHttpRequest object: ' + ExceptionMessage);
+    MsgBox(ExpandConstant('{cm:FailedToObtainModVersion}') + ' Exception: ' + ExceptionMessage, mbError, MB_OK);
+    Exit;
+  end;
+  FH2UpdateSuccess := True;
+end;
+
+procedure CheckGetFH2Files;
+begin
+  GetFH2Files;
+  if not FH2UpdateSuccess then
+  begin
+    CancelWithoutPrompt := true;
+    WizardForm.Close;
+  end;
+end;
+
 
 procedure CancelButtonClick(CurPageID: Integer; var Cancel, Confirm: Boolean);
 begin
@@ -78,9 +146,10 @@ begin
     Confirm := not CancelWithoutPrompt;
     if ExitSetupMsgBox then
     begin
-      Cancel := True;
-      Confirm := False;
+      Cancel := False;
+      Confirm := True;
       PercentLabel.Visible := False;
+      SendKeyPressed($0D);
     end;
   end;
 end;
@@ -97,7 +166,9 @@ end;
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssInstall then
+  begin
     BackupBF2RegistryEntries;
+  end;
 end;
 
 function InitializeSetup:Boolean;
@@ -226,50 +297,4 @@ begin
     WizardSelectComponents('!directx');
     WizardSelectComponents('!dotnet');
   end;
-end;
-
-procedure GetFH2Files;
-var
-  WinHttpReq: Variant;
-  BF2Path, DestPath, FullVersion, LauncherPath, ModDescFilePath, Params: String;
-  ResultCode, UploadSpeed: Integer;
-begin
-  WizardForm.StatusLabel.Caption := ExpandConstant('{cm:DownloadingSomething,Forgotten Hope 2}');
-  WinHttpReq := CreateOleObject('WinHttp.WinHttpRequest.5.1');
-  WinHttpReq.Open('GET', 'https://forgottenhope.warumdarum.de/fh2share/latestversion.php', False);
-  try
-    WinHttpReq.Send('');
-  except
-    begin
-      Log('Host timeout');
-      CancelWithoutPrompt := true;
-      WizardForm.Close;
-    end;
-  end;
-  if WinHttpReq.Status <> 200 then
-    begin
-      Log('HTTP Error: ' + IntToStr(WinHttpReq.Status) + ' ' + WinHttpReq.StatusText);
-      MsgBox(ExpandConstant('{cm:FailedToObtainModVersion}'), mbInformation, MB_OK);        
-    end
-  else
-    begin
-      FullVersion := WinHttpReq.ResponseText;
-      LauncherPath := ExpandConstant('{tmp}') + '\bin\FH2Updater.exe';
-      BF2Path := ExpandConstant('{app}');
-      UploadSpeed := 1024 * 1024; // 1 TB/s
-      Params := '--update "' + BF2Path + '" "' + FullVersion + '" ' + IntToStr(UploadSpeed);
-      Log(LauncherPath)
-      Log(Params)
-      Exec(LauncherPath, Params, '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
-      ModDescFilePath := ExpandConstant('{app}') + '\mods\fh2\mod.desc';
-      if not FileExists(ModDescFilePath) then
-      begin
-        ResultCode := MsgBox(ExpandConstant('{cm:FH2UpdateFailed}'), mbError, MB_OK);
-        DestPath := ExpandConstant('app') + '\mods\fh2\bin';
-        if DirExists(DestPath) or CreateDir(DestPath) then
-          DirectoryCopy(ExpandConstant('tmp') + '\bin', DestPath);
-          LauncherPath := ExpandConstant('{app}') + '\mods\fh2\bin\FH2Launcher.exe';
-          Exec(LauncherPath, Params, '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
-      end;
-    end;
 end;
