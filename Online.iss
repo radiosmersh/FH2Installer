@@ -89,7 +89,7 @@ begin
   
   try
     WinHttpReq := CreateOleObject('WinHttp.WinHttpRequest.5.1');
-    WinHttpReq.Open('GET', 'https://fhmod.org/fh2share/latestversion.php', False);
+    WinHttpReq.Open('GET', 'https://fhbeta.warumdarum.de/fh2share/latestversion.php', False);
     WinHttpReq.Send('');
  
     if WinHttpReq.Status <> 200 then
