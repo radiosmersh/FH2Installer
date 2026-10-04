@@ -70,3 +70,4 @@ CompDescrFH2=Forgotten Hope 2
 CompDescrVCPP2019=Visual C++ 2019
 CompDescrDirectX=DirectX 9.0c
 CompDescrDotNet=.NET Framework 4.7.2
+FailedToPrepareBF2Key=Setup failed to generate the Battlefield 2 CD-key. Error detail:
