@@ -1,82 +1,122 @@
 [Code]
-// const
-  // HexDigits = '0123456789ABCDEF';
-  
-//function CoCreateGuid(var Guid:TGuid):integer; external 'CoCreateGuid@ole32.dll stdcall';
+
+// BF2 CD-key generation and encryption, implementation taken from BF2KeyMan
+// https://github.com/art567/bf2keyman
 
 function GetTickCount: DWORD; external 'GetTickCount@kernel32.dll stdcall';
-  
-// function IntToHex(Value: Integer; Digits: Integer): string;
-// var
-  // I: Integer;
-// begin
-  // SetLength(Result, Digits);
-  // for I := 0 to Digits - 1 do
-  // begin
-    // Result[Digits - I] := HexDigits[(Value and 15) + 1];
-    // Value := Value shr 4;
-  // end;
-  // while Value <> 0 do
-  // begin
-    // Result := HexDigits[(Value and 15) + 1] + Result;
-    // Value := Value shr 4;
-  // end;
-// end;
 
-function GetGuid: string;
-// var Guid:TGuid;
+const
+  BF2KeySize      = 20;
+  BF2KeyIdentHash = 'x9392';
+  BF2KeyDescr     = 'This is the description string.';
+  BF2KeyChars     = '0123456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+  BF2KeyHexLower  = '0123456789abcdef';
+  BF2HexBufMax    = 512;
+
+const
+  CRYPTPROTECT_UI_FORBIDDEN = $1;
+
+type
+  BF2DataBlob = record
+    cbData: DWORD;    // blob length in bytes
+    pbData: DWORD;    // pointer to the blob bytes
+  end;
+
+  BF2KeyBuf = array[0..31] of Byte;    // 20-char key + trailing #0
+  BF2HexBuf = array[0..511] of Byte;
+
+var
+  BF2RndSeed: DWORD;
+
+function BF2GenerateKey: String;
+var
+  i, n: Integer;
 begin
-  // if CoCreateGuid(Guid)=0 then begin
-  // result:='{'+IntToHex(Guid.D1,8)+'-'+
-           // IntToHex(Guid.D2,4)+'-'+
-           // IntToHex(Guid.D3,4)+'-'+
-           // IntToHex(Guid.D4[0],2)+IntToHex(Guid.D4[1],2)+'-'+
-           // IntToHex(Guid.D4[2],2)+IntToHex(Guid.D4[3],2)+
-           // IntToHex(Guid.D4[4],2)+IntToHex(Guid.D4[5],2)+
-           // IntToHex(Guid.D4[6],2)+IntToHex(Guid.D4[7],2)+
-           // '}';
-  // end else
-    result:=GetDateTimeString('dd/mm/yyyy hh:nn:ss', '-', ':');
+  BF2RndSeed := GetTickCount;
+  Result := '';
+  for i := 1 to BF2KeySize do
+  begin
+    BF2RndSeed := BF2RndSeed * 1664525 + 1013904223;
+    n := (BF2RndSeed shr 16) mod 34;
+    Result := Result + BF2KeyChars[n + 1];
+  end;
 end;
 
-// function TryGetValue(const Strings: TArrayOfString; const Name: string;
-  // out Value: string): Boolean;
-// var
-  // S: string;
-  // P: Integer;
-  // I: Integer;
-// begin
-  // Result := False;
-  // for I := 0 to GetArrayLength(Strings) - 1 do
-  // begin
-    // S := Strings[I];	  
-    // P := Pos(':', S);
-    // if (P <> 0) and (CompareText(Copy(S, 1, P - 1), Name) = 0) then
-    // begin
-      // StringChangeEx(S, ' ', '', True);
-      // Value := Copy(S, P, MaxInt);
-      // Result := True;
-      // Exit;
-    // end;
-  // end;
-// end;
+// RtlMoveMemory wrappers for calling through static array params
+procedure BF2MoveToAddr(Destination: DWORD; var KeyData: BF2KeyBuf; Count: DWORD);
+  external 'RtlMoveMemory@kernel32.dll stdcall';
 
-function GenerateKey: String;
-var
-Key: String;
-// Key, TmpFileName: String;
-// ExecStdout: TArrayOfString;
-// ResultCode: Integer;
+procedure BF2MoveFromAddr(var BlobData: BF2HexBuf; Source: DWORD; Count: DWORD);
+  external 'RtlMoveMemory@kernel32.dll stdcall';
+
+function LocalAlloc(uFlags: UINT; dwBytes: DWORD): DWORD;
+  external 'LocalAlloc@kernel32.dll stdcall';
+
+function LocalFree(hMem: DWORD): DWORD;
+  external 'LocalFree@kernel32.dll stdcall';
+
+procedure BF2KeyFail(Msg: String);
 begin
-  Key := GetGuid;
-  // TmpFileName := ExpandConstant('{tmp}') + '\drive_serial.txt';
-  // ExtractTemporaryFile('smartctl.exe');
-  // Exec(ExpandConstant('{cmd}'), '/C ' + ExpandConstant('{tmp}') + '/smartctl.exe -i /dev/sda > "' + TmpFileName + '"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
-  // if LoadStringsFromFile(TmpFileName, ExecStdout) then
-    // try
-      // TryGetValue(ExecStdout, 'Serial Number', Key);
-    // except
-      // Key := GetGuid;
-    // end;
-  Result := Key;
+  Log('BF2 key: ' + Msg);
+  RaiseException(ExpandConstant('{cm:FailedToPrepareBF2Key}') + ' ' + Msg);
+end;
+
+function CryptProtectData(var pDataIn: BF2DataBlob; szDataDescr: String;
+  pOptionalEntropy: DWORD; pvReserved: DWORD; pPromptStruct: DWORD;
+  dwFlags: DWORD; var pDataOut: BF2DataBlob): DWORD;
+  external 'CryptProtectData@crypt32.dll stdcall';
+
+function BF2KeyHash(AKey: String): String;
+var
+  DataIn: BF2DataBlob;
+  DataOut: BF2DataBlob;
+  KeyBuf: BF2KeyBuf;
+  HexBuf: BF2HexBuf;
+  KeyPtr: DWORD;
+  i, cb, B: Integer;
+  Hash: String;
+begin
+  Result := '';
+  if Length(AKey) < BF2KeySize then
+    BF2KeyFail('bad key length');
+
+  { the key is passed with a trailing #0 byte, like in bf2keyman }
+  for i := 1 to BF2KeySize do
+    KeyBuf[i - 1] := Ord(AKey[i]);
+  KeyBuf[BF2KeySize] := 0;
+  cb := BF2KeySize + 1;
+
+  KeyPtr := LocalAlloc(0, cb);
+  if KeyPtr = 0 then
+    BF2KeyFail('LocalAlloc failed');
+  try
+    BF2MoveToAddr(KeyPtr, KeyBuf, cb);
+    DataIn.cbData := cb;
+    DataIn.pbData := KeyPtr;
+    if (CryptProtectData(DataIn, BF2KeyDescr, 0, 0, 0,
+         CRYPTPROTECT_UI_FORBIDDEN, DataOut) = 0) or (DataOut.cbData = 0) then
+      BF2KeyFail('CryptProtectData failed');
+
+    cb := DataOut.cbData;
+    if cb > BF2HexBufMax then
+      BF2KeyFail(Format('blob too large (%d bytes)', [cb]));
+    BF2MoveFromAddr(HexBuf, DataOut.pbData, cb);
+    LocalFree(DataOut.pbData);
+  finally
+    LocalFree(KeyPtr);
+  end;
+
+  { hex-encode the blob }
+  i := 0;
+  while i < cb do
+  begin
+    B := HexBuf[i];
+    Result := Result + BF2KeyHexLower[(B shr 4) + 1] +
+      BF2KeyHexLower[(B and 15) + 1];
+    Inc(i);
+  end;
+
+  Hash := Result;
+  Result := BF2KeyIdentHash + Hash;
+  Log('BF2 key hash: ' + Result);
 end;
