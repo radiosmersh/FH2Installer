@@ -39,15 +39,12 @@ CompressionThreads=auto
 [Files]
 DestName: "WizardForm.TopLogoImage.bmp"; Source: "InstallFiles\GFX\topbar.bmp"; Flags: dontcopy solidbreak;
 DestName: "discord.ico"; Source: "InstallFiles\GFX\discord.ico"; Flags: dontcopy solidbreak;
-Source: "Files\slim\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Components: main;
-Source: "Include\smartctl.exe"; Flags: dontcopy;
-Source: "Include\BF2CDKeyCheck.exe"; DestDir: "{tmp}";
+Source: "Files\slim_ru\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Components: main;
 Source: "Redist\*"; DestDir: "{tmp}\Redist"; Flags: ignoreversion recursesubdirs;
-Source: "Files\slim\mods\fh2\bin\*.*"; DestDir: "{tmp}\bin"; Flags: ignoreversion recursesubdirs; Components: main;
-Source: "Files\slim\BF2.exe"; DestDir: "{app}"; Flags: ignoreversion; components: main;
+Source: "Files\slim_ru\mods\fh2\bin\*.*"; DestDir: "{tmp}\bin"; Flags: ignoreversion recursesubdirs; Components: main;
+Source: "Files\slim_ru\BF2.exe"; DestDir: "{app}"; Flags: ignoreversion; components: main;
 
 [Run]
-Filename: "{tmp}\BF2CDKeyCheck.exe"; Flags: runascurrentuser
 Filename: "{tmp}\Redist\VC++2019\VC_redist.x86.exe"; Description: "{cm:SetupTask,Visual C++ 2019}"; Parameters: "/quiet"; StatusMsg: "{cm:SetupTask,Visual C++ 2019}"; Flags: runascurrentuser; Components: vcpp2019
 Filename: "{tmp}\Redist\Directx\DirectX.exe"; Description: "{cm:SetupTask,DirectX 9.0c}"; StatusMsg: "{cm:SetupTask,DirectX 9.0c}"; Flags: runascurrentuser; Components: directx
 Filename: "{tmp}\Redist\DotNet\NDP472-KB4054530-x86-x64-AllOS-ENU.exe"; Description: "{cm:SetupTask,.NET Framework 4.7.2}"; Parameters: "/q /norestart"; StatusMsg: "{cm:SetupTask,.NET Framework 4.7.2}"; Check: (not IsRunningUnderWine) and IsWin81OrBelow; Flags: runascurrentuser; Components: dotnet;
@@ -74,7 +71,7 @@ var
 
 function GetKey(Param: String): String;
 begin
-  Result := Key;
+  Result := BF2KeyHash(Key);
 end;
 
 procedure GetFH2Files;
@@ -89,7 +86,7 @@ begin
   
   try
     WinHttpReq := CreateOleObject('WinHttp.WinHttpRequest.5.1');
-    WinHttpReq.Open('GET', 'https://fhmod.org/fh2share/latestversion.php', False);
+    WinHttpReq.Open('GET', 'https://ru.playfh2.net/fh2share/latestversion.php', False);
     WinHttpReq.Send('');
  
     if WinHttpReq.Status <> 200 then
@@ -100,10 +97,10 @@ begin
     else
       begin
         FullVersion := WinHttpReq.ResponseText;
-        LauncherPath := ExpandConstant('{tmp}') + '\bin\FH2Updater.exe';
+        LauncherPath := ExpandConstant('{tmp}') + '\bin\FH2UpdaterNew.exe';
         BF2Path := ExpandConstant('{app}');
         UploadSpeed := 1024 * 1024; // 1 TB/s
-        Params := '--update "' + BF2Path + '" "' + FullVersion + '" ' + IntToStr(UploadSpeed);
+        Params := '--update "' + BF2Path + '" "' + FullVersion + '" ' + IntToStr(UploadSpeed) + ' 1';
         Log(LauncherPath);
         Log(Params);
         Exec(LauncherPath, Params, '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
@@ -174,7 +171,7 @@ end;
 function InitializeSetup:Boolean;
 begin
     Result := false;
-    Key := GenerateKey;
+    Key := BF2GenerateKey;
     Log(Key);
     CancelWithoutPrompt := false;
     Result := true;
